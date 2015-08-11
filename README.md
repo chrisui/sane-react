@@ -151,7 +151,9 @@ TBC - Composing multiple components to make another reusable component, HoCs etc
 Don't abstract away too early. React blesses us with an incredible ease to refactor so build quickly and allow patterns to emerge.
 
 ## Class Syntax
-Using the class syntax will prevent teams from falling into a pit of non-standard and non-optimal patterns and features supplied via the `React.createClass()` helper. Mixins is in particular a pattern which should be avoided for more composable (and functional) patterns. Autobinding is nice but can be achieved efficiently these days with simple higher-order functions.
+Using the class syntax will prevent teams from falling into a pit of non-standard and non-optimal patterns and features supplied via the `React.createClass()` helper. In short it is simply more future proof and will sway you into less brittle patterns of code abstraction.
+
+Mixins is in particular a pattern which should be avoided for more composable (and functional) patterns. Autobinding is nice but can be achieved efficiently these days with simple higher-order functions.
 
 ```javascript
 class MyComponent extends React.Component {
