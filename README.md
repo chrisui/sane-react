@@ -1,10 +1,10 @@
 Sane React Apps
 ===============
-A non-exhaustive curated set of guidelines to aid writing [sane](http://chrispearce.co/the-sane-developer/) React applications.
+A non-exhaustive curated set of guidelines to aid writing sane React applications.
 
 Aims
 ----
-The core aims of these guidelines are to provide sensible patterns and architectural direction on structuring React applications to allow for maintainability, flexibility and scalability.
+The core aims of these guidelines are to provide sensible patterns and architectural direction on structuring React applications to allow for maintainability, flexibility and scalability - Essentially providing sensible succint patterns to help teams build quickly and safely.
 
 Quick tips, reasonings and examples should all be provided. Further reading too.
 
@@ -50,10 +50,14 @@ Local state within components can create a "black box" for data and becomes diff
 
 If your components remain stateless you can treat them as pure and garuantee that every time you pass the same props you will render identical output. As mentioned before this means, not only is it incredibly easy to understand and control your output, but also means you can apply easy optimizations and test in a breeze.
 
-**Component Control Tips:**
+Obviously it is not always the most efficient (in terms of developer time) to extract *all* state out of a component into some other form of store but it should be carefully considered whether data should live as local state to a component or out (always better to be out but weigh up the advantages). See below state tips for some helpers on this!
+
+**State Tips:**
 
 1. The only local state you would usually want is UI descriptions such as "is this menu open", "which item in my dropdown is selected" etc. 
 2. A nice way to think about local state is this: "If I was to serialize my data and re-render the entire app would I want this data to be correctly restored?" If yes then you should not contain this data as local state but contain it higher up and pass down as props.
+3. The higher up your component tree your state the better.
+  - *Bonus:* If it can live outside of your component tree nicely then you're onto a winner!
 
 ## Dumb Components
 *EVERY* component you write for your application can and should be "dumb". This means that the component does not have any concept of *how* to mutate or retrieve your data sources directly but it will simply render using the data provided (via props) and dumbly attempt actions using appropiate provided functions (again via props).
