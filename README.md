@@ -1,5 +1,5 @@
-Sane React Patterns
-===================
+Sane React Apps
+===============
 A non-exhaustive curated set of guidelines to aid writing [sane](http://chrispearce.co/the-sane-developer/) React applications.
 
 Aims
