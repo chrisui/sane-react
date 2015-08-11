@@ -22,9 +22,18 @@ Contents
 5. [Smart Connections](#smart-connections)
 6. [Clever Composition](#clever-composition)
 7. [Sensible Abstraction](#sensible-abstraction)
+8. [Class Syntax](#class-syntax)
 
 ## Prop Types
-Every Prop used in a component should be documented within the `propTypes` property.
+*Every* Prop used in a component should be documented within the `propTypes` property.
+
+```javascript
+static propTypes = {
+  size: PropTypes.number.isRequired,
+  onSelect: PropTypes.func
+  items: PropTypes.arrayOf(PropTypes.string)
+}
+```
 
 Components should be small and easy-to-use. Two lessons every developer should take from the React library are the productivity wins from 1. a small and clear api and 2. up-front and succinct errors/warnings when things are used incorrectly.
 
@@ -33,10 +42,23 @@ Prop Types allow us to promote these virtues in our own Components by making us 
 **Prop Tips:**
 
 1. A Prop Type value is just a function so feel free to create your own to provide even more precise or accurate warnings. Remember the key elements of a good "Prop Type Checker" are a. have succinct error messages and b. are easy and natural to read
-2. As components are used side by side with elements it would be more consistent to name props in a similar fashion to element attributes. Eg. `focused` > `isFocused`
+2. As components are used side by side with elements it would be more consistent to name props in a similar fashion to element attributes. Eg. `focused` > `isFocused`.
+3. Use the [eslint-react-plugin](https://www.npmjs.com/package/eslint-plugin-react) for [eslint](http://eslint.org/) to ensure you keep on top of this!
 
 ## Pure Render
 Your `render` method should *always* be pure and have no side effects. This means that given the same `props`, `state` and `context` your `render` function should *always* produce the same result.
+
+```javascript
+function render() {
+  // render function never accessed anything but `props` and `state`
+  return (
+    <div>
+      <h1>{this.props.title}</h1>
+      <input value={this.state.value} />
+    </div>
+  );
+}
+```
 
 Ensuring our render functions are pure means testing is easy (simply mock `props` and `state`) and ensures output is very predictable. It also means that performance-critical optimizations can be made *super* easily via techniques such as basic memoization.
 
@@ -47,6 +69,19 @@ Ensuring our render functions are pure means testing is easy (simply mock `props
 
 ## Stateless Components
 Local state within components can create a "black box" for data and becomes difficult to maintain as soon as any local state is dependant on outside state (props). The only time local component state should be used is when you are *absolutely* sure that nothing outside of the component would care about that state.
+
+```javascript
+function render() {
+  // this component needs no internal state and is only controlled via props
+  // so all we need to test is to pass props - as easy as testing a function!
+  return (
+    <div>
+      <h1>{this.props.title}</h1>
+      <input value={this.props.value} />
+    </div>
+  );
+}
+```
 
 If your components remain stateless you can treat them as pure and garuantee that every time you pass the same props you will render identical output. As mentioned before this means, not only is it incredibly easy to understand and control your output, but also means you can apply easy optimizations and test in a breeze.
 
@@ -62,9 +97,28 @@ Obviously it is not always the most efficient (in terms of developer time) to ex
 ## Dumb Components
 *EVERY* component you write for your application can and should be "dumb". This means that the component does not have any concept of *how* to mutate or retrieve your data sources directly but it will simply render using the data provided (via props) and dumbly attempt actions using appropiate provided functions (again via props).
 
+```javascript
+class DumbComponent extends React.Component {
+
+  static propTypes = {
+    // dumb components will define props they want to blindly interact with data
+    fetchData: PropTypes.func.isRequired,
+    updateData: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired
+  }
+  
+  render() {
+    // our dumb component has no concept of anything beyond the data it expects
+    // and wanting to make a blind request (function call) for/to update it
+    return <div>{this.props.data.name}</div>;
+  }
+  
+}
+```
+
 Keeping all your components dumb provides a clear separation of data management and UI render/interaction which will allow for greater maintainability and flexibility down the line and ensures your components are not doing too much work.
 
-Again an additional benefit of this guideline is that testing becomes super easy. (TODO: because...)
+Again an additional benefit of this guideline is that testing becomes super easy. Just pass mock props!
 
 **Dumbing Down Tips:**
 
@@ -75,6 +129,14 @@ So if all my components are dumb how does anything ever *actually* happen then? 
 
 Your smart layer could appear in many forms but all have the simple job of providing your dumb components with the data and utilities they need via props.
 
+```javascript
+class DumbComponent extends React.Component {}
+
+// connect() returns a component which will initialize your DumbComponent
+// with props
+const SmartComponent = connect(DumbComponent);
+```
+
 The recommended form of this would be a "Higher-order Component". In the same fashion that a "Higher-order Function" can take a function and return a new function (where the underlying function can now have access to a higher scope) the Higher-order Component will allow you to provide extra scope (via props) to your dumb component.
 
 **Smart tips:**
@@ -83,10 +145,44 @@ The recommended form of this would be a "Higher-order Component". In the same fa
 2. For a great example of the "dumb"/"smart" theory in play see [react-redux](https://github.com/gaearon/react-redux#dumb-component-is-unaware-of-redux)
 
 ## Clever Composition
-TBC
+TBC - Composing multiple components to make another reusable component, HoCs etc. etc.
 
 ## Sensible Abstraction
 Don't abstract away too early. React blesses us with an incredible ease to refactor so build quickly and allow patterns to emerge.
+
+## Class Syntax
+Using the class syntax will prevent teams from falling into a pit of non-standard and non-optimal patterns and features supplied via the `React.createClass()` helper. Mixins is in particular a pattern which should be avoided for more composable (and functional) patterns. Autobinding is nice but can be achieved efficiently these days with simple higher-order functions.
+
+```javascript
+class MyComponent extends React.Component {
+
+  static propTypes = {
+    onSelect: PropTypes.func.isRequired,
+    items: PropTypes.array.isRequired
+  }
+  
+  onSelect(item) {
+    // context and data bound event handler without .bind() or autobinding!
+    return event => {
+      this.props.onSelect(item);
+      event.preventDefault();
+    }
+  }
+  
+  render() {
+    const {items} = this.props;
+    
+    return (
+      <div>
+        {items.map(item => 
+          <div onClick={this.onSelect(item)}>{item.name}</div>
+        )}
+      </div>
+    );
+  }
+  
+}
+```
 
 ---
 
