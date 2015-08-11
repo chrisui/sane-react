@@ -79,5 +79,11 @@ The recommended form of this would be a "Higher-order Component". In the same fa
 2. For a great example of the "dumb"/"smart" theory in play see [react-redux](https://github.com/gaearon/react-redux#dumb-component-is-unaware-of-redux)
 
 ## Clever Composition
+TBC
 
 ## Sensible Abstraction
+Don't abstract away too early. React blesses us with an incredible ease to refactor so build quickly and allow patterns to emerge.
+
+---
+
+These should be driven by community-curated best-practices so please feel free to contribute!
