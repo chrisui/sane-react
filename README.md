@@ -90,4 +90,4 @@ Don't abstract away too early. React blesses us with an incredible ease to refac
 
 ---
 
-These should be driven by community-curated best-practices so please feel free to contribute!
+These should be driven by community-curated best practices so please feel free to contribute!
